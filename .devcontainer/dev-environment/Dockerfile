@@ -22,7 +22,7 @@ RUN useradd -m -u 1001 -g users -G wheel,docker -s /bin/zsh develop
 
 #INSTALL NODE
 
-ENV NODE_VERSION 19.8.1
+ENV NODE_VERSION 18.6.0
 
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && case "${dpkgArch##*-}" in \
