@@ -1,18 +1,18 @@
-FROM buildpack-deps:stable
+FROM postgres
 
 # INSTALL CLI TOOLS
 
-RUN apt update
+RUN apt-get update
 
 # Install less, zsh, sudo, and docker
-RUN apt install -y less sudo zsh docker.io
+RUN apt-get install -y less sudo zsh curl docker.io
 
 # ADD NODE USER
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
 # CREATE A DEV USER
-RUN apt update
+RUN apt-get update
 
 RUN groupadd wheel
 
@@ -66,6 +66,9 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
 RUN corepack enable
 
 RUN corepack prepare yarn@stable --activate
+
+# INSTALL POSTGRES
+RUN apt-get -y install postgresql
 
 USER develop
 WORKDIR $HOME

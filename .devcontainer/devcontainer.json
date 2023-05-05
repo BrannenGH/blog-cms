@@ -2,10 +2,22 @@
   "name": "HallB Blog Backend",
   "dockerFile": "./dev-environment/Dockerfile",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "portsAttributes": {
-    "9000": {
-      "label": "Hello Remote World",
-      "onAutoForward": "notify"
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "POSTGRES_DB": "strapi",
+    "DATABASE_NAME": "strapi",
+    "DATABASE_USERNAME": "postgres",
+    "DATABASE_PASSWORD": "kGmYjLYjtk%6",
+    "POSTGRES_PASSWORD": "kGmYjLYjtk%6",
+    "DATABASE_CLIENT": "postgres",
+    "APP_KEYS": "NUupEY*f3eBc,jL&of64#jj^e"
+    /*"JWT_SECRET": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhbGxiLm1lIn0.1U9Gq6zna1j5bNcKfEWlgMDlT599hnlC4kKNo8gWQLw",
+    "API_TOKEN_SALT": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhbGxiLm1lIn0.1U9Gq6zna1j5bNcKfEWlgMDlT599hnlC4kKNo8gWQLw",
+    "ADMIN_JWT_SECRET": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhbGxiLm1lIn0.1U9Gq6zna1j5bNcKfEWlgMDlT599hnlC4kKNo8gWQLw"*/
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-ossdata.vscode-postgresql"]
     }
   }
 }
