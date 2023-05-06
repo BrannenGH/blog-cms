@@ -1,26 +1,20 @@
 FROM buildpack-deps:stable
 
-# INSTALL CLI TOOLS
+# INSTALL DEPENDENCIES AND SETUP USERS
 
-RUN apt update
+RUN apt-get update &&\
+  apt-get install -y less sudo zsh lsb-release locales docker.io supervisor && \
+  echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen &&\
+  locale-gen en_US.UTF-8 &&\
+  groupadd node &&\
+  useradd --gid node --shell /bin/bash --create-home node &&\
+  groupadd wheel && \
+  useradd -m -g users -G wheel,docker -s /bin/zsh --create-home develop &&\
+  echo "Defaults exempt_group+=develop" > /etc/sudoers.d/default &&\
+  printf "root ALL=(ALL:ALL) ALL \n%%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/default &&\
+  runuser - develop /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# Install less, zsh, sudo, and docker
-RUN apt install -y less sudo zsh docker.io
-
-# ADD NODE USER
-RUN groupadd --gid 1000 node \
-  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
-
-# CREATE A DEV USER
-RUN apt update
-
-RUN groupadd wheel
-
-RUN printf "root ALL=(ALL:ALL) ALL \n%%wheel ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/default
-
-RUN useradd -m -u 1001 -g users -G wheel,docker -s /bin/zsh develop
-
-#INSTALL NODE
+# INSTALL NODE
 
 ENV NODE_VERSION 18.6.0
 
@@ -62,13 +56,18 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && node --version \
   && npm --version
 
-# INSTALL YARN
-RUN corepack enable
+# INSTALL POSTGRES
+ENV POSTGRES_VERSION 15
 
-RUN corepack prepare yarn@stable --activate
+RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' &&\
+  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - &&\
+  apt-get update &&\
+  apt-get -y install postgresql-client-$(echo $POSTGRES_VERSION) postgresql-$(echo $POSTGRES_VERSION) &&\
+  echo "export PATH=/usr/lib/postgresql/$(echo $POSTGRES_VERSION)/bin/:$PATH" >> $(echo ~develop)/.zshrc &&\
+  mkdir /db &&\
+  chown postgres:postgres /db &&\
+  runuser - postgres /bin/sh -c "/usr/lib/postgresql/$(echo $POSTGRES_VERSION)/bin/initdb -D /db/data/" &&\
+  printf "[supervisord]\nnodaemon=true\npidfile=/tmp/supervisord.pid\n\n[program:postgres]\ncommand=/usr/lib/postgresql/$(echo $POSTGRES_VERSION)/bin/postgres -D /db/data/\ndirectory=/db/\nautostart=true\nautorestart=true\nuser=postgres" >> /etc/supervisor/conf.d/postgres.conf
 
 USER develop
 WORKDIR $HOME
-
-# INSTALL OH MY ZSH
-RUN /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
