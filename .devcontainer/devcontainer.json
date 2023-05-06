@@ -10,11 +10,12 @@
     "DATABASE_PASSWORD": "kGmYjLYjtk%6",
     "POSTGRES_PASSWORD": "kGmYjLYjtk%6",
     "DATABASE_CLIENT": "postgres",
-    "APP_KEYS": "NUupEY*f3eBc,jL&of64#jj^e"
-    /*"JWT_SECRET": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhbGxiLm1lIn0.1U9Gq6zna1j5bNcKfEWlgMDlT599hnlC4kKNo8gWQLw",
-    "API_TOKEN_SALT": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhbGxiLm1lIn0.1U9Gq6zna1j5bNcKfEWlgMDlT599hnlC4kKNo8gWQLw",
-    "ADMIN_JWT_SECRET": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhbGxiLm1lIn0.1U9Gq6zna1j5bNcKfEWlgMDlT599hnlC4kKNo8gWQLw"*/
+    "APP_KEYS": "NUupEY*f3eBc,jL&of64#jj^e",
+    "JWT_SECRET": "5pAYZBhtctuNBp9BppIFDA==",
+    "API_TOKEN_SALT": "ioXoevZ9bjVhvVgjhPqwdQ==",
+    "ADMIN_JWT_SECRET": "PyRLq6EvmIAFl4WuraxCqg=="
   },
+  "postStartCommand": "sudo supervisord &",
   "customizations": {
     "vscode": {
       "extensions": ["ms-ossdata.vscode-postgresql"]
